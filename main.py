@@ -1,28 +1,42 @@
+
 import pygame
 import sys
-from Entity import Entity
+from Entity import *
 from Vector2 import Vector2
+from random import randint, uniform
+from pygame import mixer
 
+# Init pygame libraries
+mixer.pre_init(22050, -16, 40, 4096 / 4)
 pygame.init()
+mixer.init()
 
-screen_size = (1200, 700)
+# Setup pygame window
+screen_size = (800, 800)
 
 # Bits per pixel, 8 bits for each RGBA value.
 bpp = 32
 screen = pygame.display.set_mode(screen_size, pygame.HWSURFACE, bpp)
 
+# Load some sound effects
+laser_shot_sfx = mixer.Sound("Assets/laser_shot.wav")
+hit_sfx = mixer.Sound("Assets/hit.wav")
+
+# Setup the player entity
 player = Entity()
-player.graphicsBounds.width = 40
-player.graphicsBounds.height = 40
+player.graphicsBounds.radius = 10
+player.collider.radius = 10
 
-# Also set the collider bounds.
-
-player.position.x = 100
-player.position.y = 100
+player.position = Vector2(screen_size[0]/2, screen_size[1]/2)
 player.color = (255, 0, 0)
+player.max_speed = 200
 accel = 200
 
+
 def take_input(keys):
+
+    if player is None:
+        return
 
     xdir = 0.0
     ydir = 0.0
@@ -44,9 +58,12 @@ def take_input(keys):
 
     player.acceleration = direction * accel
 
-fps = 60
+
 delta_time = 0.0
 last_frame_time = 0.0
+
+asteroid_spawn_time = 2.0
+asteroid_timer = 0.0
 
 quit = False
 while not quit:
@@ -61,11 +78,13 @@ while not quit:
     keys = pygame.key.get_pressed()
     take_input(keys)
 
-    player.update(delta_time)
+    if player is not None:
+        player.update(delta_time)
 
-    screen.fill((0,0,0))
+    screen.fill((25, 10, 35))
 
-    player.render(screen)
+    if player is not None:
+        player.render(screen)
 
     pygame.display.update()
 

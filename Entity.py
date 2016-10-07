@@ -1,10 +1,13 @@
 
-from pygame import Rect, draw
+from pygame import draw
 from Vector2 import Vector2
+from Circle import Circle
+import random
+import math
+
 
 # This class describes game objects in our game
-
-class Entity:
+class Entity(object):
 
     def __init__(self):
 
@@ -12,29 +15,30 @@ class Entity:
         # default color is white
         self.color = (255, 255, 255)
 
-        self.graphicsBounds = Rect(0, 0, 1, 1)
+        self.graphicsBounds = Circle(Vector2(0.0, 0.0), 1)
 
-        self.collider = Rect(0, 0, 1, 1)
+        self.collider = Circle(Vector2(0.0, 0.0), 1)
 
-        self.position = Vector2(0, 0)
-        self.velocity = Vector2(0, 0)
+        self.position = Vector2(0.0, 0.0)
+        self.velocity = Vector2(0.0, 0.0)
 
-        self.acceleration = Vector2(0, 0)
+        self.acceleration = Vector2(0.0, 0.0)
 
     def update(self, dt):
 
         self.velocity += self.acceleration * dt
         self.position += self.velocity * dt
 
-
-        gw = self.graphicsBounds.width
-        gh = self.graphicsBounds.height
-        self.graphicsBounds.topleft = (self.position.x - gw/2, self.position.y - gh/2)
-
-        cw = self.collider.width
-        ch = self.collider.height
-        self.collider.topleft = (self.position.x - cw/2, self.position.y - ch/2)
+        # Update graphical and physical bounds
+        self.graphicsBounds.center = self.position
+        self.collider.center = self.position
 
     def render(self, screen):
 
-        draw.rect(screen, self.color, self.graphicsBounds)
+        center = self.graphicsBounds.center
+        radius = self.graphicsBounds.radius
+
+        # Pygame needs a 2-tuple of integers as the center of a circle
+        center_int = (int(center.x), int(center.y))
+
+        draw.circle(screen, self.color, center_int, radius)

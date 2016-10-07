@@ -1,9 +1,11 @@
-__author__ = 'unit978'
 
 from math import sqrt
 from math import acos
 from math import sin
 from math import cos
+
+
+__author__ = 'unit978'
 
 
 # Two dimensional vector that supports the basic operations
@@ -63,8 +65,10 @@ class Vector2:
     # Return a copy of the normalized vector
     @staticmethod
     def get_normal(vector2):
-        m = vector2.magnitude()
-        return Vector2(vector2.x/m, vector2.y/m)
+        v = Vector2(vector2.x, vector2.y)
+        v.normalize()
+
+        return v
 
     def magnitude(self):
         return sqrt(self.x*self.x + self.y*self.y)
