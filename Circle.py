@@ -6,6 +6,11 @@ class Circle:
         self.center = center
         self.radius = radius
 
+    # takes in another circle
     def overlaps(self, other):
 
-        pass
+        distance = (self.center - other.center).magnitude()
+
+        sum_radii = self.radius + other.radius
+
+        return distance <= sum_radii

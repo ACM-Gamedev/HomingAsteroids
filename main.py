@@ -32,6 +32,65 @@ player.color = (255, 0, 0)
 player.max_speed = 200
 accel = 200
 
+bullets = list()
+asteroids = list()
+emitters = list()
+
+
+def spawn_asteroid():
+
+    if player is None:
+        return
+
+    screen_center = Vector2(screen_size[0]/2, screen_size[0]/2)
+
+    spawn_radius = max(screen_center.x, screen_center.y)
+
+    spawn_x = uniform(-1, 1)
+    spawn_y = uniform(-1, 1)
+    spawn_direction = Vector2(spawn_x, spawn_y)
+    spawn_direction.normalize()
+
+    spawn_point = screen_center + spawn_direction * spawn_radius
+
+    a = Asteroid(player, 250)
+
+    a.position = spawn_point
+    a.color = (0, 0, 255)
+
+    size = randint(8, 20)
+    a.graphicsBounds.radius = size
+    a.collider.radius = size
+    a.max_speed = 280
+
+    asteroids.append(a)
+
+
+def shoot():
+
+    if player is None:
+        return
+
+    # get pos returns a tuple (mx, my)
+    mouse_tuple = pygame.mouse.get_pos()
+
+    mouse_pos = Vector2(mouse_tuple[0], mouse_tuple[1])
+
+    # direction pointing at the mouse from the player
+    to_mouse = Vector2.get_normal(mouse_pos - player.position)
+
+    vel = to_mouse * 400.0
+
+    b = Bullet(500, player.position, vel)
+
+    b.color = (255, 150, 80)
+    b.graphicsBounds.radius = 5
+    b.collider.radius = 5
+
+    bullets.append(b)
+
+    laser_shot_sfx.play()
+
 
 def take_input(keys):
 
@@ -59,6 +118,39 @@ def take_input(keys):
     player.acceleration = direction * accel
 
 
+def check_collision():
+
+    if player is None:
+        return
+
+    global player
+
+    for a, asteroid in reversed(list(enumerate(asteroids))):
+
+        if player.collider.overlaps(asteroid.collider):
+
+            e = BurstEmitter(100, 3)
+            e.emit(player.position)
+            emitters.append(e)
+
+            player = None
+            hit_sfx.play()
+            break
+
+        for b, bullet in reversed(list(enumerate(bullets))):
+
+            if asteroid.collider.overlaps(bullet.collider):
+
+                e = BurstEmitter(15, 3)
+                e.emit(bullet.position)
+                emitters.append(e)
+
+                del asteroids[a]
+                del bullets[b]
+                hit_sfx.play()
+                break
+
+
 delta_time = 0.0
 last_frame_time = 0.0
 
@@ -75,16 +167,53 @@ while not quit:
         if event.type == pygame.QUIT:
             quit = True
 
+        if event.type == pygame.MOUSEBUTTONUP:
+            shoot()
+
     keys = pygame.key.get_pressed()
     take_input(keys)
 
     if player is not None:
         player.update(delta_time)
 
+    # for b in bullets:
+    #    b.update(delta_time)
+
+    for i, bullet in reversed(list(enumerate(bullets))):
+        bullet.update(delta_time)
+        if bullet.life <= 0:
+            del bullets[i]
+
+    for a in asteroids:
+        a.update(delta_time)
+
+    asteroid_timer += delta_time
+    if asteroid_timer >= asteroid_spawn_time:
+        spawn_asteroid()
+        asteroid_timer = 0
+
+    for i, emitter in reversed(list(enumerate(emitters))):
+
+        emitter.update(delta_time)
+
+        if emitter.is_done():
+            del emitters[i]
+
+    check_collision()
+
     screen.fill((25, 10, 35))
 
     if player is not None:
         player.render(screen)
+
+    for b in bullets:
+        b.render(screen)
+
+    for a in asteroids:
+        a.render(screen)
+
+    for e in emitters:
+        e.render(screen)
 
     pygame.display.update()
 
