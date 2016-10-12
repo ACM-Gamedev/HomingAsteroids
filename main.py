@@ -120,10 +120,10 @@ def take_input(keys):
 
 def check_collision():
 
+    global player
+
     if player is None:
         return
-
-    global player
 
     for a, asteroid in reversed(list(enumerate(asteroids))):
 
