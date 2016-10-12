@@ -221,3 +221,7 @@ while not quit:
     delta_time = (start_frame_time - last_frame_time) / 1000.0
 
     last_frame_time = start_frame_time
+
+# Clean up
+pygame.quit()
+sys.exit()
