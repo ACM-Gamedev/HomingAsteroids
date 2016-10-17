@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="UTF-8">
+    <title>Homingasteroids by ACM-Gamedev</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+  </head>
+  <body>
+    <section class="page-header">
+      <h1 class="project-name">Homingasteroids</h1>
+      <h2 class="project-tagline">Tutorial game for ACM game dev</h2>
+      <a href="https://github.com/ACM-Gamedev/HomingAsteroids" class="btn">View on GitHub</a>
+      <a href="https://github.com/ACM-Gamedev/HomingAsteroids/zipball/master" class="btn">Download .zip</a>
+      <a href="https://github.com/ACM-Gamedev/HomingAsteroids/tarball/master" class="btn">Download .tar.gz</a>
+    </section>
+
+    <section class="main-content">
+      <h3>
+<a id="welcome-to-the-homing-asteroids-tutorialbreakdown" class="anchor" href="#welcome-to-the-homing-asteroids-tutorialbreakdown" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Welcome to the Homing-asteroids tutorial/breakdown.</h3>
+
+<p>What this blog post aims to do is to demystify the black box with getting started in game development. There is a huge issue with getting started in video game development. I personally faced this challenge with getting started and continue to read of countless others not knowing how to start. The trends I’ve seen are that once somebody knows how to start, they can iteratively get better at making games, each success and failure being the show of force that you’re learning. I’m aiming to get you all started today. Our sample project today will be a clone of Asteroids with a small twist.</p>
+
+<h3>
+<a id="have-not-haste" class="anchor" href="#have-not-haste" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Have not haste</h3>
+
+<p>Please take very careful note of the following. This example will not have best practices, there could potentially even be little workarounds and hacks, (there’s at best 1 to be fair), but the point I’m pushing at you is that this is by no means a final product of a game that includes all of the things to know about making games within it. This project will have many topics covered to get you started with a strong overall base and that’s it. We will also cover some nifty and interesting game design choices throughout the project.</p>
+
+<p>This post is intended for my students. I’ll be speaking directly to you (students). You all have access to the computers in the computer science lab in the engineering lab, these machines have Ubuntu on them (a linux distro). That’s where all of the code is to be built. You can build the code on your own, but I won’t be covering how to do that if you happen to be using a different OS, there is a lot of material to cover and I’d rather not spend hours trying to get everyone situated across several operating systems and whatnot.</p>
+
+<h3>
+<a id="authors-and-contributors" class="anchor" href="#authors-and-contributors" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Authors and Contributors</h3>
+
+<h3>
+<a id="have-this" class="anchor" href="#have-this" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Have this</h3>
+
+<p>You will need to have Ubuntu setup. Python should be installed and compilable. Pygame should be installed and importable.</p>
+
+<p>Getting set up
+If you’re one of my students, you already have access python and pygame in the CS lab, just log in and you’ve finished setting up. Follow along if you’re working on your own machine. Make sure you have Ubuntu installed. There are potentially other operating systems that will work as well, but I will not cover those options. If you operate with another OS, make sure you are able to run python files/scripts and import pygame into them. If you can do that, you can skip the “Getting set up” section.</p>
+
+<p>For those of you who have Ubuntu, you’re cool.</p>
+
+<p>We’re in an academic setting, and linux is cool. With this in mind, we should be cool and give you some exercise with linux and the command line. Let’s start that. We have Ubuntu, let’s make sure we have python and pygame.</p>
+
+<p>Open up a terminal. You can open a terminal by pressing the window button and searching for “terminal”. Behold the command line! It’s beautiful. Oh yes it is. More importantly, it’s powerful, you can do oh so much with this. </p>
+
+<p>Let’s make sure we have python and pygame now. Type this line and press enter at the end.</p>
+
+<blockquote>
+<p>sudo apt-get install python2.7</p>
+</blockquote>
+
+<p>If you don’t have python, this will install it, otherwise it’ll tell you that your system already has python up-to-date. Nice! Let’s repeat this for pygame.</p>
+
+<blockquote>
+<p>sudo apt-get install python-pygame</p>
+</blockquote>
+
+<p>By now, you should have ubuntu, python, and pygame installed. Alrighty, we can get started on demystifying the black box behind getting started with game development basics.</p>
+
+<p>Command line reference sheet
+The command line will tell you where you are. For example, when I run my command line I see this</p>
+
+<blockquote>
+<p>sage@sage:~$</p>
+</blockquote>
+
+<p>How do you see what’s in the directory where you’re looking? Enter this command</p>
+
+<blockquote>
+<p>ls
+This will list the files you have</p>
+</blockquote>
+
+<p>You can move into folders with the cd command</p>
+
+<blockquote>
+<p>cd 
+cd Documents</p>
+</blockquote>
+
+<p>You can move up the hierarchy (to the folder above you similarly to pressing a back button) by using .. as a directory</p>
+
+<blockquote>
+<p>cd ..</p>
+</blockquote>
+
+<p>You can run python files (python files have their extensions as .py) by running this command</p>
+
+<blockquote>
+<p>python </p>
+</blockquote>
+
+<p>Introduction</p>
+
+<p>The basics, what are they? This is something that isn’t easy to answer with applicability, the basics for making a video game can change from person to person and there is no clear answer that everyone will accept as totally correct. Generally every game has a core game loop, and some form of interactivity between the player and the game. That’s as close to a specific as we can answer without getting into the philosophy of what is a game; let’s avoid the conversation of what composes video games. We’re going to cover game loops, drawing to a screen, gathering input from a player, data/entity management, collision detection, and some general math that is very helpful for game developers. I’ll provide code gists along my explanations of these topics. Enjoy!</p>
+
+<p>Code
+I remember first learning to program, everything I did was output/shown on the console. Most of you have had similar experiences so far. Many of us did. The thing we need to create in order to get some visuals on the screen is a window. That’s the actual technical jargon. Wanna use a different programming language to make a game? Lookup “how to draw/make window in ”.  We’re using python, so let’s make a window in python. </p>
+
+<p><code></code></p>
+
+<p>You may note that the code doesn’t have curly braces, python uses significant whitespace. The tab indentation is what let’s code know what’s within scope.</p>
+
+<p>Let’s run this code. Well that didn’t last long, hopefully you all saw that. What happened?
+This is where we’re going to talk about the game loop. Our program as it is right now will create a window and continue doing whatever more we have in our code, unfortunately that would be nothing. We make a window then reach the end of the program. What we need is a way to stop the program from just terminating itself, a loop fits this. We will create a loop that will stop the program from being born only to die immediately. </p>
+
+<p><code></code></p>
+
+<p>Cool! We have a window on the screen. This is super cool! What you learned in a few minutes of reading took me...an embarrassingly long time, it’s super cool! Moving forward, we should aim to get some stuff on the window and drawn. Let’s draw the player on the screen. What is the player? The player-character is some data that the user can manipulate. I make a distinction here between player-character and the player, for further thinking please keep in mind that the character and the player are different things (some games don’t have a character). We’ll discuss in more detail further down why OOP(Object Oriented Programming) is ok for this project. Let’s advance with this methodology.</p>
+
+<p>The player is data. What other objects are we going to be dealing with that are data? Bullets and asteroids. These 3 objects have some qualities that are going to be similar, so we can go ahead and create an object that will encompass all of this behaviour and implementation detail. The bullet, player, and asteroids will further define any other details that they need for themselves. An entity will be the barebones representation/data that all other objects we’re going to make need. What are those things? Asteroids, Bullets, and the player all need the following:
+Position
+Velocity
+Acceleration
+BoundingBox
+Color</p>
+
+<p><code></code></p>
+
+<p>We can go back to our main file and create entities now. When we create an entity, it’ll have all of the items above. We can manipulate the physical components such as velocity and position, or any of the components really. Want to make it green or red? That’s fine too. Let’s make a player and draw the player on the screen.</p>
+
+<p><code> [If there’s an issue with drawing to screen, talk about it, buffering/updating screen on each frame.]</code></p>
+
+<p>Cool, remember that the player is unique in that the player should have interactivity with the game. Let’s read input from the keyboard, python gives us tools to do this easily. When the player presses {w,a,s,d} we should see the player screen accelerate on screen.</p>
+
+<p><code> [If there’s an issue with drawing to screen, talk about it, buffering/updating screen on each frame. This section might have the player not get deleted]</code></p>
+
+<pre><code>We have a proper game now, well mostly. The player can move a little blob on the screen around. We’re also taking good measure on how to properly control time &amp; movement. We update as fast as the CPU will allow us, and we keep track of how much time elapses each time a frame goes by, letting us move things in accordance to the cpu. The stronger the cpu, the smoother the game will look, if the CPU is slow, the game will be choppy, but regardless, the game will be in sync across both CPU’s. If the player is set to move 10k pixels in 2 seconds, both machines will see the player move across the distance in the same time. It’ll look different, but the physics will be there properly on both and that’s a great guarantee to have.
+</code></pre>
+
+<p>Let’s add the ability to shoot bullets at the asteroids that don’t exist yet. Some of you are cs 1, so you might not know about lists. Lists are a way to hold several items of data with an easy means of reference. </p>
+
+<p><code> linear optmiization</code></p>
+
+      <footer class="site-footer">
+        <span class="site-footer-owner"><a href="https://github.com/ACM-Gamedev/HomingAsteroids">Homingasteroids</a> is maintained by <a href="https://github.com/ACM-Gamedev">ACM-Gamedev</a>.</span>
+
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
+      </footer>
+
+    </section>
+
+  
+  </body>
+</html>
